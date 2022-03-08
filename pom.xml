@@ -13,7 +13,6 @@
     <groupId>co.udea.hero.api</groupId>
     <artifactId>tour-hero-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
     <name>tour-hero-api</name>
     <description>Api tour of hero</description>
 
