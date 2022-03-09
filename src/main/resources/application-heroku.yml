@@ -17,8 +17,8 @@ spring:
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://ec2-54-145-102-149.compute-1.amazonaws.com:5432/d587ot89l3k4ol
     driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     hikari:
