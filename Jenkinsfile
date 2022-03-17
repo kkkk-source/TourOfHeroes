@@ -8,7 +8,7 @@ pipeline {
     SONARQUBE_API_KEY = credentials('tour-of-heroes-backend-sonarqube-api-key')
   }
   parameters { 
-    string(name: 'APP_NAME', defaultValue: '', description: 'What is the Heroku app name?') 
+    string(name: 'APP_NAME', defaultValue: 'tour-of-heroes-backend-09876', description: 'What is the Heroku app name?') 
   }
   stages {
     stage('Install dependencies') {
