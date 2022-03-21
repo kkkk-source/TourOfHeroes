@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage('Install dependencies') {
       steps {
-        sh 'mvn install -DskipTests'
+        sh './scripts/install_dependencies'
       }
     }
     stage('Static code analysis') {
