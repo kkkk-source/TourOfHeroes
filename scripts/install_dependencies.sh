@@ -1,3 +1,1 @@
-#!/bin/bash
-
-mvn install --DskipTests
+mvn install -DskipTests

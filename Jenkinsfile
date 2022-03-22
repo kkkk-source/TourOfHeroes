@@ -1,53 +1,55 @@
 pipeline {
   agent any
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
+
   environment {
-    HEROKU_API_KEY = credentials('tour-of-heroes-backend-api-key')
-    SONARQUBE_API_KEY = credentials('tour-of-heroes-backend-sonarqube-api-key')
+    APP_NAME = credentials('app-name')
+    HEROKU_API_KEY = credentials('heroku-api-key')
+    SONARQUBE_API_KEY = credentials('sonarqube-api-key')
   }
-  parameters { 
-    string(name: 'APP_NAME', defaultValue: 'tour-of-heroes-backend-09876', description: 'What is the Heroku app name?') 
-  }
+
   stages {
-    stage('Install dependencies') {
+
+    stage('Install Dependencies') {
       steps {
-        sh './scripts/install_dependencies'
+        sh 'bash ./scripts/install_dependencies.sh'
       }
     }
-    stage('Static code analysis') {
+
+    stage('Run Tests') {
       steps {
-        sh 'mvn sonar:sonar -Dsonar.login=$SONARQUBE_API_KEY'
+        sh 'bash ./scripts/run_tests.sh'
       }
     }
-    stage('Tests') {
-      environment {
-        SPRING_PROFILES_ACTIVE = 'dev'
-      }
+
+    stage("SonarQube Analysis") {
       steps {
-        sh 'mvn test'
+        withSonarQubeEnv('SonarQube') {
+          sh 'bash ./scripts/static_code_analysis.sh'
+        }
       }
     }
-    stage('Build') {
+
+    stage("Quality Gate") {
       steps {
-        sh 'docker build -t moll-y/tour-of-heroes-backend:latest .'
+        timeout(time: 1, unit: 'HOURS') {
+          waitForQualityGate abortPipeline: true
+        }
       }
     }
-    stage('Release the image') {
+
+    stage('Build Image') {
       steps {
-        sh '''
-          echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com
-          docker tag moll-y/tour-of-heroes-backend:latest registry.heroku.com/$APP_NAME/web
-          docker push registry.heroku.com/$APP_NAME/web
-          heroku container:release web --app=$APP_NAME
-        '''
+        sh 'bash ./scripts/build_docker_image.sh'
       }
     }
-  }
-  post {
-    always {
-      sh 'docker logout'
+
+    stage('Release Image') {
+      when {
+        branch 'main'
+      }
+      steps {
+        sh 'bash ./scripts/release_image.sh'
+      }
     }
   }
 }
