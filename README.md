@@ -1,1 +1,1 @@
-# Tour of Heroes API v1.5
+# Tour of Heroes API
