@@ -31,7 +31,7 @@ public class HeroController {
     @GetMapping("{id}")
     @ApiOperation(value = " Buscar un heroe por su id",  response = Hero.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Heroe encontrado existosamente"),
+            @ApiResponse(code = 200, message = "Hero encontrado existosamente"),
             @ApiResponse(code = 400, message = "La petición es invalida"),
             @ApiResponse(code = 404, message = "Heroe no encontrado"),
             @ApiResponse(code = 500, message = "Error interno al procesar la respuesta")})
